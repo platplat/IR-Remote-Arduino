@@ -1,4 +1,3 @@
 # IR-Remote-Arduino
 
-1) Connect Arduino as described in schematic.
-2) Upload the code on to Arduino.
+Simple infrared TV remote for Samsung TV, with 3 buttons (vol+, vol-, and source).
