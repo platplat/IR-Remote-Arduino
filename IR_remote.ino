@@ -8,7 +8,8 @@
 //#define IR_RECEIVE_PIN 2
 #define IR_SEND_PIN 11
 #define INTERRUPT_PIN 3
-//#define SAMSUNG_TV
+//#define DEBUG
+
 //unsigned long vol_plus_code = 3772833823; //HEX E0E0E01F
 //unsigned long vol_minus_code = 3772829743; //HEX E0E0D02F
 //unsigned long source_code = 3772809343; //HEX E0E0807F
@@ -38,7 +39,9 @@ void loop() {
   
   int volUpBtn = digitalRead(VOL_UP_BUTTON_PIN);
   if (volUpBtn == 0) {
-    Serial.println("VOL UP PUSHED SENT");
+    #ifdef DEBUG
+    Serial.println("VOL UP PUSHED");
+    #endif
     IrSender.sendRaw(vol_up,68,38);
     delay(50);
     previousMillis = currentMillis;
@@ -46,7 +49,9 @@ void loop() {
 
   int volDownBtn = digitalRead(VOL_DOWN_BUTTON_PIN);
   if (volDownBtn == 0) {
-    Serial.println("VOL DOWN PUSHED SENT");
+    #ifdef DEBUG
+    Serial.println("VOL DOWN PUSHED");
+    #endif
     IrSender.sendRaw(vol_down,68,38);
     delay(50);
     previousMillis = currentMillis;
@@ -54,7 +59,9 @@ void loop() {
 
   int srcBtn = digitalRead(SOURCE_BUTTON_PIN);
   if (srcBtn == 1 && srcBtnPrestate == 0) {
-    Serial.println("SOURCE PUSHED SENT");
+    #ifdef DEBUG
+    Serial.println("SOURCE PUSHED");
+    #endif
     IrSender.sendRaw(src,68,38);
     srcBtnPrestate = 1;
     delay(50);
@@ -65,10 +72,14 @@ void loop() {
   }
 
   if (currentMillis-previousMillis > 5000) {
+    #ifdef DEBUG
     Serial.println("Going to sleep...");
+    #endif
     delay(100);
     going_to_sleep();
+    #ifdef DEBUG
     Serial.println("Waking up...");
+    #endif
   }
 
 //  if (IrReceiver.decode()) {
@@ -86,7 +97,7 @@ void loop() {
 //Sleep Mode function
 void going_to_sleep() {
   sleep_enable(); //enable sleep mode
-  attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), wake_up, LOW); //interrupt for waking up --> configure Interrupt Pin as a WIRED NOR!!!
+  attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), wake_up, LOW);
   set_sleep_mode(SLEEP_MODE_PWR_DOWN); //full sleep mode
   sleep_cpu(); //activate sleep mode
 }
